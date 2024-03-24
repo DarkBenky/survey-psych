@@ -8,11 +8,11 @@
 4. (optional) improve performance
 5. (highest) better evaluation of the survey after addition information
 
-    - [Screenshot from 2024-03-24 21-23-29.png]
+    - [[Screenshot from 2024-03-24 21-23-29.png]]
       polozka => number of question
       skore => value of question
       celkove skore => value of question added
 
-    - [Screenshot from 2024-03-24 21-26-37.png]
+    - [[Screenshot from 2024-03-24 21-26-37.png]]
       hodnota (percentualna) => celkove skore
       if celkove skore > 14 => 99%
