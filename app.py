@@ -4,6 +4,7 @@ from openpyxl.styles import PatternFill
 import time
 import os
 import base64
+from streamlit_js_eval import streamlit_js_eval
 
 
 st.set_page_config(page_title='Test results calculator', page_icon='📝', layout='centered', initial_sidebar_state='collapsed')
@@ -122,9 +123,11 @@ class Survey:
         self.wb = Workbook()
         self.ws = self.wb.active
         
-        
-
+    
+    
 def main_page():
+    screen_width = streamlit_js_eval(js_expressions='screen.width', key = 'SCR')
+    
     answers = {}
 
     st.title('Test results calculator')
@@ -147,38 +150,46 @@ def main_page():
             description = st.text_area('Description')
             
         
-        # Create columns for the grid layout
-        col1, col2, col3, col4 = st.columns(4)
-        # Create a container for each column
-        with col1:
-            for i in range(0, 27):
-                question_number = i * 4 + 1
-                st.markdown('---')
-                answer = st.radio(f'Select an answer for question {question_number}:', ['0', '1', '2', '3'], key=f'radio_{question_number}')
-                answers[question_number] = answer
+        if screen_width > 720:
+        
+            # Create columns for the grid layout
+            col1, col2, col3, col4 = st.columns(4)
+            # Create a container for each column
+            with col1:
+                for i in range(0, 27):
+                    question_number = i * 4 + 1
+                    st.markdown('---')
+                    answer = st.radio(f'Select an answer for question {question_number}:', ['0', '1', '2', '3'], key=f'radio_{question_number}')
+                    answers[question_number] = answer
 
-        with col2:
-            for i in range(0, 27):
-                question_number = i * 4 + 2
-                st.markdown('---')
-                answer = st.radio(f'Select an answer for question {question_number}:', ['0', '1', '2', '3'], key=f'radio_{question_number}')
-                answers[question_number] = answer
+            with col2:
+                for i in range(0, 27):
+                    question_number = i * 4 + 2
+                    st.markdown('---')
+                    answer = st.radio(f'Select an answer for question {question_number}:', ['0', '1', '2', '3'], key=f'radio_{question_number}')
+                    answers[question_number] = answer
 
-        with col3:
-            for i in range(0, 27):
-                question_number = i * 4 + 3
-                st.markdown('---')
-                answer = st.radio(f'Select an answer for question {question_number}:', ['0', '1', '2', '3'], key=f'radio_{question_number}')
-                answers[question_number] = answer
+            with col3:
+                for i in range(0, 27):
+                    question_number = i * 4 + 3
+                    st.markdown('---')
+                    answer = st.radio(f'Select an answer for question {question_number}:', ['0', '1', '2', '3'], key=f'radio_{question_number}')
+                    answers[question_number] = answer
 
-        with col4:
-            for i in range(0, 27):
-                question_number = i * 4 + 4
-                st.markdown('---')
-                answer = st.radio(f'Select an answer for question {question_number}:', ['0', '1', '2', '3'], key=f'radio_{question_number}')
-                answers[question_number] = answer
+            with col4:
+                for i in range(0, 27):
+                    question_number = i * 4 + 4
+                    st.markdown('---')
+                    answer = st.radio(f'Select an answer for question {question_number}:', ['0', '1', '2', '3'], key=f'radio_{question_number}')
+                    answers[question_number] = answer
 
-        st.markdown('---')
+            st.markdown('---')
+
+        else:
+            for i in range(0, 108):
+                st.markdown('---')
+                answer = st.radio(f'Select an answer for question {i + 1}:', ['0', '1', '2', '3'], key=f'radio_{i}')
+                answers[i + 1] = answer
         
         
 

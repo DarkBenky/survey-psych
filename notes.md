@@ -1,7 +1,7 @@
 # TODO
 
 # DONE 1. (high) add together LP1 + LP2 ...
-2. (mid) responsibility
+# DONE 2. (mid) responsibility
 # DONE  3. (high) export data as excel file with header data [ time_of_creation, name , age , sex , description ]
       - client side data
       - (optional) color coding of output values
