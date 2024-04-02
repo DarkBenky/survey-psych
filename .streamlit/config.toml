@@ -1,0 +1,9 @@
+[client]
+showErrorDetails = true
+[server]
+headless = true
+port = 8501
+enableCORS = true
+[theme]
+base="dark"
+primaryColor="#FF0074"
