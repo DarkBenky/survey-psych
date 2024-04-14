@@ -27,8 +27,52 @@ class Survey:
         self.answers = {category: [] for category in categories}
         self.adhd_index = []
         self.wb = Workbook()
-        self.ws = self.wb.active    
+        self.ws = self.wb.active
+        self.porucha_chovania = []
+        self.porucha_vzdoru = []
         
+    def add_porucha_chovania(self, answer):
+        self.porucha_chovania.append(answer)
+    
+    def add_porucha_vzdoru(self, answer):
+        self.porucha_vzdoru.append(answer)
+        
+    def calculate_porucha_vzdoru(self):
+        score = 0
+        for answer in self.porucha_vzdoru:
+            if answer.value in [2,3]:
+                answer.value = True
+                score += 1
+            else:
+                answer.value = False
+                
+        if score >= 4:
+            return score , True
+        else:
+            return score , False
+        
+    def calculate_porucha_chovania(self):    
+        score = 0
+        for answer in self.porucha_chovania:
+            if answer.question_number in [16,30,56,91,6]:
+                if answer.value in [2,3]:
+                    answer.value = True
+                    score += 1
+                else:
+                    answer.value = False
+                    continue
+            else:
+                if answer.value in [1,2,3]:
+                    answer.value = True
+                    score += 1
+                else:
+                    answer.value = False
+                    
+        if score >= 4:
+            return score , True
+        else:
+            return score , False
+          
     def add_adhd_index(self, answer):
         self.adhd_index.append(answer)
         
@@ -210,6 +254,10 @@ def create_survey(answers):
     survey = Survey(categories_page_one)
 
     for question_number , answer in answers.items():
+        if question_number in [16,30,27,39,41,96,11,78,65,89,56,58,91,76,6]:
+            survey.add_porucha_chovania(Answer('Porucha Chovania' , answer , question_number))
+        if question_number in [14,73,48,102,94,59,21,57]:
+            survey.add_porucha_vzdoru(Answer('Porucha Vzdoru' , answer , question_number))
         if question_number in [19,35,47,67,84,88,98,99,101,104]:
             survey.add_adhd_index(Answer('ADHD' , answer , question_number))
         if question_number in [1,8,18,26,32,42]:

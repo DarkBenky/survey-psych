@@ -16,3 +16,7 @@
     - [[Screenshot from 2024-03-24 21-26-37.png]]
       hodnota (percentualna) => celkove skore
       if celkove skore > 14 => 99%
+
+5. (mid) rename domaine Conners3
+6. (Important) Make evaluation for Porucha Chovani and Porucha opozicnihe vzdoru
+  - [porucha.png]
