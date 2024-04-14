@@ -13,14 +13,18 @@ if 'temp' not in st.session_state:
     st.session_state.temp = {}
     
 class Answer:
-    def __init__(self, category, value, question_number):
+    def __init__(self, category : str, value : int, question_number : int):
         self.category = category
         self.value = value
         self.question_number = question_number
-    
+        self.evaluated = None
+        
     def __str__(self):
         return f'Category: {self.category}, Value: {self.value}, Question Number: {self.question_number}'
 
+    def __repr__(self) -> str:
+        return f'Category: {self.category}, Value: {self.value}, Question Number: {self.question_number}'
+    
 class Survey:
     def __init__(self, categories):
         self.categories = categories
@@ -28,53 +32,79 @@ class Survey:
         self.adhd_index = []
         self.wb = Workbook()
         self.ws = self.wb.active
-        self.porucha_chovania = []
-        self.porucha_vzdoru = []
+        self.behavior = []
+        self.opposition = []
         
-    def add_porucha_chovania(self, answer):
-        self.porucha_chovania.append(answer)
+    def add_porucha_chovania(self, answer : Answer):
+        self.behavior.append(answer)
     
     def add_porucha_vzdoru(self, answer):
-        self.porucha_vzdoru.append(answer)
+        self.opposition.append(answer)
         
-    def calculate_porucha_vzdoru(self):
+    def calculate_opposition(self):
         score = 0
-        for answer in self.porucha_vzdoru:
-            if answer.value in [2,3]:
-                answer.value = True
+        for answer in self.opposition:
+            if int(answer.value) in [2,3]:
+                answer.evaluated = True
                 score += 1
             else:
-                answer.value = False
-                
+                answer.evaluated = False
+    
         if score >= 4:
-            return score , True
+            return score , True , [{
+                "Category": "Porucha Vzdoru",
+                "Value": answer.value,
+                "Question Number": answer.question_number,
+                "Evaluated": answer.evaluated
+                } for answer in self.opposition]
         else:
-            return score , False
+            return score , False , [{
+                "Category": "Porucha Vzdoru",
+                "Value": answer.value,
+                "Question Number": answer.question_number,
+                "Evaluated": answer.evaluated
+                } for answer in self.opposition]
         
-    def calculate_porucha_chovania(self):    
+    def calculate_behavior(self):    
         score = 0
-        for answer in self.porucha_chovania:
-            if answer.question_number in [16,30,56,91,6]:
-                if answer.value in [2,3]:
-                    answer.value = True
+        for answer in self.behavior:
+            if int(answer.question_number) in [16,30,56,91,6]:
+                if int(answer.value) in [2,3]:
+                    answer.evaluated = True
                     score += 1
                 else:
-                    answer.value = False
+                    answer.evaluated = False
                     continue
             else:
-                if answer.value in [1,2,3]:
-                    answer.value = True
+                if int(answer.value) in [1,2,3]:
+                    answer.evaluated = True
                     score += 1
-                else:
-                    answer.value = False
                     
         if score >= 4:
-            return score , True
+            return score , True , [{ 
+                "Category": "Porucha Chovania",
+                "Value": answer.value,
+                "Question Number": answer.question_number,
+                "Evaluated": answer.evaluated
+                } for answer in self.behavior]
         else:
-            return score , False
+            return score , False , [{
+                "Category": "Porucha Chovania",
+                "Value": answer.value,
+                "Question Number": answer.question_number,
+                "Evaluated" : answer.evaluated
+                } for answer in self.behavior]
           
     def add_adhd_index(self, answer):
         self.adhd_index.append(answer)
+        
+    def represent_adhd_index(self):
+        return [
+            {
+            "Category": "ADHD",
+            "Value": answer.value,
+            "Question Number": answer.question_number}
+            for answer in self.adhd_index]
         
     def calculate_adhd_index(self):
         overall_score = 0
@@ -243,17 +273,18 @@ def main_page():
             
 
 
-st.cache_data()
+# st.cache_data()
 def convert_to_bites(file_path):
     with open(file_path, 'rb') as file:
         return file.read()    
      
-@st.cache_resource()    
+# @st.cache_resource()    
 def create_survey(answers):
     categories_page_one = ['IN' , 'HY' , 'LP' , 'EF' , 'AG' , 'PR' , 'GI' , 'AN' , 'AH' , 'CD' , 'OD' , 'PI' , 'NI',]
     survey = Survey(categories_page_one)
 
     for question_number , answer in answers.items():
+        question_number = int(question_number)
         if question_number in [16,30,27,39,41,96,11,78,65,89,56,58,91,76,6]:
             survey.add_porucha_chovania(Answer('Porucha Chovania' , answer , question_number))
         if question_number in [14,73,48,102,94,59,21,57]:
@@ -330,10 +361,13 @@ def get_binary_file_downloader_link(file_path, file_label='File'):
     href = f'<a href="data:file/xlsx;base64,{b64}" download="{file_path}">{file_label}</a>'
     return href
     
-st.cache_data()
+# st.cache_data()
 def calculate_score(survey : Survey):        
     output = survey.output()
     adhd_score , adhd_probability = survey.calculate_adhd_index()
+    behavior_disorder_value , behavior_disorder , answer_behavior = survey.calculate_behavior()
+    oppositional_defiant_disorder_value , oppositional_defiant_disorder , answer_opposition = survey.calculate_opposition()
+    adhd_answers = survey.represent_adhd_index()
     
     # download temp.xlsx file
     st.markdown(get_binary_file_downloader_link('temp.xlsx', 'Download Excel File'), unsafe_allow_html=True)
@@ -341,8 +375,33 @@ def calculate_score(survey : Survey):
     st.header('ADHD Index')
     st.write("ADHD Index Score: ", adhd_score)
     st.write(f"Probability of ADHD: " , f"{adhd_probability} %")
-    st.progress(adhd_probability)
-    st.markdown('---')    
+    st.progress(adhd_probability,text=f"{len(adhd_answers)} / {adhd_score}")
+    expand_adhd = st.expander(f'Answers for category ADHD Index', expanded=False)
+    with expand_adhd:
+        for answer in adhd_answers:
+            st.markdown(f'Question Number: {answer["Question Number"]} , Value: {answer["Value"]}')
+    st.markdown('---')
+    
+    st.header("Oppositional defiant disorder")
+    st.write("Score Oppositional defiant disorder: ",  oppositional_defiant_disorder_value)
+    st.write("Oppositional defiant disorder: ",  oppositional_defiant_disorder)
+    st.progress(oppositional_defiant_disorder_value / len(answer_opposition), text=f"{oppositional_defiant_disorder_value} / {len(answer_opposition)}")
+    expand_opposition = st.expander(f'Answers for category Oppositional defiant disorder', expanded=False)
+    with expand_opposition:
+        for answer in answer_opposition:
+            st.markdown(f'Question Number: {answer["Question Number"]} , Value: {answer["Value"]} , Evaluated: {answer["Evaluated"]}')
+    st.markdown('---')
+    
+    st.header("Behavior Disorder")
+    st.write("Score for Behavior Disorder: ", behavior_disorder_value)
+    st.write("Behavior Disorder: ", behavior_disorder)
+    expand_behavior = st.expander(f'Answers for category Behavior Disorder', expanded=False)
+    st.progress(behavior_disorder_value / len(answer_behavior), text=f"{behavior_disorder_value} / {len(answer_behavior)}")
+    with expand_behavior:
+        for answer in answer_behavior:
+            st.markdown(f'Question Number: {answer["Question Number"]} , Value: {answer["Value"]} , Evaluated: {answer["Evaluated"]}')
+    st.markdown('---')
+    
         
     for category , element in output.items():
         st.header(f'Category: {category}')
@@ -351,7 +410,7 @@ def calculate_score(survey : Survey):
             normalized_score = element[-1]['Score'] / ((len(element) - 1) * 3)
         except ZeroDivisionError:
             normalized_score = 0
-        st.progress(normalized_score)
+        st.progress(normalized_score , text=f"{element[-1]['Score']} / {len(element) * 3}")
         expand = st.expander(f'Answers for category {category}', expanded=False)
         with expand:
             for answer in element[:-1]:
