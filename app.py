@@ -74,11 +74,12 @@ class Survey:
                     score += 1
                 else:
                     answer.evaluated = False
-                    continue
             else:
                 if int(answer.value) in [1,2,3]:
                     answer.evaluated = True
                     score += 1
+                else:
+                    answer.evaluated = False
                     
         if score >= 4:
             return score , True , [{ 
@@ -173,6 +174,47 @@ class Survey:
             cell.fill = PatternFill(start_color=self.rgb_to_hex("130,235,144"), end_color=self.rgb_to_hex("235,210,130"), fill_type="solid")
         
         self.ws.append(["ADHD Index score :" , self.calculate_adhd_index()[0] , "Probability of ADHD :" , str(self.calculate_adhd_index()[1])+' %'])
+        for cell in self.ws[self.ws.max_row]:
+            cell.fill = PatternFill(start_color=self.rgb_to_hex("235,210,130"), end_color=self.rgb_to_hex("235,210,130"), fill_type="solid")
+        for answer in self.adhd_index:
+            self.ws.append(["Question number :", answer.question_number, "Answer value :", answer.value])
+            # add color to answer value cell based on the value
+            if answer.value == '0':
+                self.ws.cell(row=self.ws.max_row, column=4).fill = PatternFill(start_color=self.rgb_to_hex("58,67,180"), end_color=self.rgb_to_hex("58,67,180"), fill_type = "solid")
+            elif answer.value == '1':
+                self.ws.cell(row=self.ws.max_row, column=4).fill = PatternFill(start_color=self.rgb_to_hex("253,29,233"), end_color=self.rgb_to_hex("253,29,233"), fill_type = "solid")
+            elif answer.value == '2':
+                self.ws.cell(row=self.ws.max_row, column=4).fill = PatternFill(start_color=self.rgb_to_hex("253,67,67"), end_color=self.rgb_to_hex("253,67,67"), fill_type = "solid")
+            elif answer.value == '3':
+                self.ws.cell(row=self.ws.max_row, column=4).fill = PatternFill(start_color=self.rgb_to_hex("252,207,69"), end_color=self.rgb_to_hex("252,207,69"), fill_type = "solid")
+                    
+        self.ws.append(["Oppositional defiant disorder score :" , self.calculate_opposition()[0] , "Oppositional defiant disorder :" , self.calculate_opposition()[1]])
+        for cell in self.ws[self.ws.max_row]:
+            cell.fill = PatternFill(start_color=self.rgb_to_hex("235,210,130"), end_color=self.rgb_to_hex("235,210,130"), fill_type="solid")
+        for answer in self.opposition:
+            self.ws.append(["Question number :", answer.question_number, "Answer value :", answer.value , "Evaluated :" , answer.evaluated])
+            # add color to answer value cell based on the value
+            if answer.evaluated == True:
+                self.ws.cell(row=self.ws.max_row, column=4).fill = PatternFill(start_color=self.rgb_to_hex("58,67,180"), end_color=self.rgb_to_hex("58,67,180"), fill_type = "solid")
+            elif answer.evaluated == False:
+                self.ws.cell(row=self.ws.max_row, column=4).fill = PatternFill(start_color=self.rgb_to_hex("253,29,233"), end_color=self.rgb_to_hex("253,29,233"), fill_type = "solid")
+            else:
+                self.ws.cell(row=self.ws.max_row, column=4).fill = PatternFill(start_color=self.rgb_to_hex("253,67,67"), end_color=self.rgb_to_hex("253,67,67"), fill_type = "solid")
+    
+        
+        self.ws.append(["Behavior disorder score :" , self.calculate_behavior()[0] , "Behavior disorder :" , self.calculate_behavior()[1]])
+        for cell in self.ws[self.ws.max_row]:
+            cell.fill = PatternFill(start_color=self.rgb_to_hex("235,210,130"), end_color=self.rgb_to_hex("235,210,130"), fill_type="solid")
+        for answer in self.behavior:
+            self.ws.append(["Question number :", answer.question_number, "Answer value :", answer.value , "Evaluated :" , answer.evaluated])
+            # add color to answer value cell based on the value
+            if answer.evaluated == True:
+                self.ws.cell(row=self.ws.max_row, column=4).fill = PatternFill(start_color=self.rgb_to_hex("58,67,180"), end_color=self.rgb_to_hex("58,67,180"), fill_type = "solid")
+            elif answer.evaluated == False:
+                self.ws.cell(row=self.ws.max_row, column=4).fill = PatternFill(start_color=self.rgb_to_hex("253,29,233"), end_color=self.rgb_to_hex("253,29,233"), fill_type = "solid")
+            else:
+                self.ws.cell(row=self.ws.max_row, column=4).fill = PatternFill(start_color=self.rgb_to_hex("253,67,67"), end_color=self.rgb_to_hex("253,67,67"), fill_type = "solid")
+                       
         
         for category, answers in self.answers.items():
             self.ws.append(["Category :" , category , "Overall score :" , self.calculate_score()[category]])
@@ -272,13 +314,12 @@ def main_page():
             calculate_score(survey)    
             
 
-
-# st.cache_data()
+@st.cache_data()
 def convert_to_bites(file_path):
     with open(file_path, 'rb') as file:
         return file.read()    
      
-# @st.cache_resource()    
+@st.cache_resource()    
 def create_survey(answers):
     categories_page_one = ['IN' , 'HY' , 'LP' , 'EF' , 'AG' , 'PR' , 'GI' , 'AN' , 'AH' , 'CD' , 'OD' , 'PI' , 'NI',]
     survey = Survey(categories_page_one)
@@ -361,7 +402,7 @@ def get_binary_file_downloader_link(file_path, file_label='File'):
     href = f'<a href="data:file/xlsx;base64,{b64}" download="{file_path}">{file_label}</a>'
     return href
     
-# st.cache_data()
+# @st.cache_data()
 def calculate_score(survey : Survey):        
     output = survey.output()
     adhd_score , adhd_probability = survey.calculate_adhd_index()
