@@ -192,7 +192,7 @@ class Survey:
         for cell in self.ws[self.ws.max_row]:
             cell.fill = PatternFill(start_color=self.rgb_to_hex("235,210,130"), end_color=self.rgb_to_hex("235,210,130"), fill_type="solid")
         for answer in self.opposition:
-            self.ws.append(["Question number :", answer.question_number, "Answer value :", answer.value , "Evaluated :" , answer.evaluated])
+            self.ws.append(["Question number :", answer.question_number, "Answer value :", answer.value , "Evaluated :" , str(answer.evaluated)])
             # add color to answer value cell based on the value
             if answer.evaluated == True:
                 self.ws.cell(row=self.ws.max_row, column=4).fill = PatternFill(start_color=self.rgb_to_hex("58,67,180"), end_color=self.rgb_to_hex("58,67,180"), fill_type = "solid")
@@ -206,7 +206,7 @@ class Survey:
         for cell in self.ws[self.ws.max_row]:
             cell.fill = PatternFill(start_color=self.rgb_to_hex("235,210,130"), end_color=self.rgb_to_hex("235,210,130"), fill_type="solid")
         for answer in self.behavior:
-            self.ws.append(["Question number :", answer.question_number, "Answer value :", answer.value , "Evaluated :" , answer.evaluated])
+            self.ws.append(["Question number :", answer.question_number, "Answer value :", answer.value , "Evaluated :" , str(answer.evaluated)])
             # add color to answer value cell based on the value
             if answer.evaluated == True:
                 self.ws.cell(row=self.ws.max_row, column=4).fill = PatternFill(start_color=self.rgb_to_hex("58,67,180"), end_color=self.rgb_to_hex("58,67,180"), fill_type = "solid")
