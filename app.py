@@ -17,7 +17,7 @@ class Answer:
         self.category = category
         self.value = value
         self.question_number = question_number
-        self.evaluated = None
+        self.evaluated = False
         
     def __str__(self):
         return f'Category: {self.category}, Value: {self.value}, Question Number: {self.question_number}'
