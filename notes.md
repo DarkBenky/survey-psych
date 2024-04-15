@@ -20,4 +20,4 @@
         5. (mid) rename domaine Conners3
 [DONE]  6. (Important) Make evaluation for Porucha Chovania and Porucha opozicneho vzdoru
           - [porucha.png]
-        7. (Important) Update excel to work with Porucha Chovania a Porucha opozicneho vzdoru
+[Done]  7. (Important) Update excel to work with Porucha Chovania a Porucha opozicneho vzdoru
