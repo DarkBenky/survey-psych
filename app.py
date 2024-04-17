@@ -34,6 +34,110 @@ class Survey:
         self.ws = self.wb.active
         self.behavior = []
         self.opposition = []
+        self.adhd_hyperactivity = {}
+        self.adhd_inattention = {}
+    
+    def add_adhd_inattention(self, answer : Answer):
+        self.adhd_inattention[answer.question_number] = answer
+        
+    def calculate_adhd_inattention(self, age: int):
+        score = 0
+        if int(self.adhd_inattention[68].value) in [2,3] and int(self.adhd_inattention[79].value) in [2,3]:
+            score += 1
+            self.adhd_inattention[68].evaluated = True
+            self.adhd_inattention[79].evaluated = True
+        
+        for answer in self.adhd_inattention.values():
+            if int(answer.value) in [2,3] and int(answer.question_number) not in [68,79]:
+                answer.evaluated = True
+                score += 1
+            elif int(answer.question_number) not in [68,79]:
+                answer.evaluated = False
+                
+        if age <= 16:
+            if score >= 6:
+                return score , True , [{
+                    "Category": "ADHD Nepozornost",
+                    "Value": answer.value,
+                    "Question Number": answer.question_number,
+                    "Evaluated": answer.evaluated
+                    } for answer in self.adhd_inattention.values()]
+            else:
+                return score , False , [{
+                    "Category": "ADHD Nepozornost",
+                    "Value": answer.value,
+                    "Question Number": answer.question_number,
+                    "Evaluated": answer.evaluated
+                    } for answer in self.adhd_inattention.values()]
+        else:
+            if score >= 5:
+                return score , True , [{
+                    "Category": "ADHD Nepozornost",
+                    "Value": answer.value,
+                    "Question Number": answer.question_number,
+                    "Evaluated": answer.evaluated
+                    } for answer in self.adhd_inattention.values()]
+            else:
+                return score , False , [{
+                    "Category": "ADHD Nepozornost",
+                    "Value": answer.value,
+                    "Question Number": answer.question_number,
+                    "Evaluated": answer.evaluated
+                    } for answer in self.adhd_inattention.values()]
+            
+    def add_adhd_hyperactivity(self, answer : Answer):
+        self.adhd_hyperactivity[answer.question_number] = answer
+        
+    def calculate_adhd_hyperactivity(self, age: int):
+        score = 0
+        if int(self.adhd_hyperactivity[69].value) in [2,3] and int(self.adhd_hyperactivity[99].value) in [2,3]:
+            score += 1
+            self.adhd_hyperactivity[69].evaluated = True
+            self.adhd_hyperactivity[99].evaluated = True
+            
+        if int(self.adhd_hyperactivity[54].value) in [2,3] and int(self.adhd_hyperactivity[45].value) in [2,3]:
+            score += 1
+            self.adhd_hyperactivity[54].evaluated = True
+            self.adhd_hyperactivity[45].evaluated = True
+        
+        for answer in self.adhd_hyperactivity.values():
+            print(answer)
+            if int(answer.value) in [2,3] and int(answer.question_number) not in [69,99,54,45]:
+                answer.evaluated = True
+                score += 1
+            elif int(answer.question_number) not in [69,99,54,45]:
+                answer.evaluated = False
+                
+        if age <= 16:
+            if score >= 6:
+                return score , True , [{
+                    "Category": "ADHD Hyperactivity",
+                    "Value": answer.value,
+                    "Question Number": answer.question_number,
+                    "Evaluated": answer.evaluated
+                    } for answer in self.adhd_hyperactivity.values()]
+            else:
+                return score , False , [{
+                    "Category": "ADHD Hyperactivity",
+                    "Value": answer.value,
+                    "Question Number": answer.question_number,
+                    "Evaluated": answer.evaluated
+                    } for answer in self.adhd_hyperactivity.values()]
+        else:
+            if score >= 5:
+                return score , True , [{
+                    "Category": "ADHD Hyperactivity",
+                    "Value": answer.value,
+                    "Question Number": answer.question_number,
+                    "Evaluated": answer.evaluated
+                    } for answer in self.adhd_hyperactivity.values()]
+            else:
+                return score , False , [{
+                    "Category": "ADHD Hyperactivity",
+                    "Value": answer.value,
+                    "Question Number": answer.question_number,
+                    "Evaluated": answer.evaluated
+                    } for answer in self.adhd_hyperactivity.values()]
         
     def add_porucha_chovania(self, answer : Answer):
         self.behavior.append(answer)
@@ -313,7 +417,7 @@ def main_page():
         if st.form_submit_button('Submit'):
             survey = create_survey(answers)
             survey.export_to_excel(name , age , sex , description)
-            calculate_score(survey)    
+            calculate_score(survey , age)    
             
 
 @st.cache_data()
@@ -328,6 +432,10 @@ def create_survey(answers):
 
     for question_number , answer in answers.items():
         question_number = int(question_number)
+        if question_number in [47,95,35,68,79,84,28,97,101,2]:
+            survey.add_adhd_inattention(Answer('ADHD nepozornost' , answer , question_number))
+        if question_number in [98,93,69,99,71,54,45,3,43,61,104]:
+            survey.add_adhd_hyperactivity(Answer('ADHD hyperactivity' , answer , question_number))
         if question_number in [16,30,27,39,41,96,11,78,65,89,56,58,91,76,6]:
             survey.add_porucha_chovania(Answer('Porucha Chovania' , answer , question_number))
         if question_number in [14,73,48,102,94,59,21,57]:
@@ -405,12 +513,14 @@ def get_binary_file_downloader_link(file_path, file_label='File'):
     return href
     
 # @st.cache_data()
-def calculate_score(survey : Survey):        
+def calculate_score(survey : Survey , age : int):        
     output = survey.output()
     adhd_score , adhd_probability = survey.calculate_adhd_index()
     behavior_disorder_value , behavior_disorder , answer_behavior = survey.calculate_behavior()
     oppositional_defiant_disorder_value , oppositional_defiant_disorder , answer_opposition = survey.calculate_opposition()
     adhd_answers = survey.represent_adhd_index()
+    hyperactivity_score , hyperactivity_value , answer_hyperactivity = survey.calculate_adhd_hyperactivity(age=age)
+    inattention_score , inattention_value , answer_inattention = survey.calculate_adhd_inattention(age=age)
     
     # download temp.xlsx file
     st.markdown(get_binary_file_downloader_link('temp.xlsx', 'Download Excel File'), unsafe_allow_html=True)
@@ -423,6 +533,26 @@ def calculate_score(survey : Survey):
     with expand_adhd:
         for answer in adhd_answers:
             st.markdown(f'Question Number: {answer["Question Number"]} , Value: {answer["Value"]}')
+    st.markdown('---')
+    
+    st.header("ADHD Hyperactivity")
+    st.write("Score ADHD Hyperactivity: ", hyperactivity_score)
+    st.write("ADHD Hyperactivity: ", hyperactivity_value)
+    st.progress(hyperactivity_score / len(answer_hyperactivity), text=f"{hyperactivity_score} / {len(answer_hyperactivity)}")
+    expand_hyperactivity = st.expander(f'Answers for category ADHD Hyperactivity', expanded=False)
+    with expand_hyperactivity:
+        for answer in answer_hyperactivity:
+            st.markdown(f'Question Number: {answer["Question Number"]} , Value: {answer["Value"]} , Evaluated: {answer["Evaluated"]}')
+    st.markdown('---')
+    
+    st.header("ADHD Inattention")
+    st.write("Score ADHD Inattention: ", inattention_score)
+    st.write("ADHD Inattention: ", inattention_value)
+    st.progress(inattention_score / len(answer_inattention), text=f"{inattention_score} / {len(answer_inattention)}")
+    expand_inattention = st.expander(f'Answers for category ADHD Inattention', expanded=False)
+    with expand_inattention:
+        for answer in answer_inattention:
+            st.markdown(f'Question Number: {answer["Question Number"]} , Value: {answer["Value"]} , Evaluated: {answer["Evaluated"]}')
     st.markdown('---')
     
     st.header("Oppositional defiant disorder")

@@ -22,3 +22,4 @@
           - [porucha.png]
 [Done]  7. (Important) Update excel to work with Porucha Chovania a Porucha opozicneho vzdoru
         8. Make evaluation for ADHD with inattention and hyperactivity
+          - ask more questions about ADHD
