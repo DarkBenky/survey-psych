@@ -101,7 +101,6 @@ class Survey:
             self.adhd_hyperactivity[45].evaluated = True
         
         for answer in self.adhd_hyperactivity.values():
-            print(answer)
             if int(answer.value) in [2,3] and int(answer.question_number) not in [69,99,54,45]:
                 answer.evaluated = True
                 score += 1
