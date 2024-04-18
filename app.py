@@ -290,6 +290,31 @@ class Survey:
                 self.ws.cell(row=self.ws.max_row, column=4).fill = PatternFill(start_color=self.rgb_to_hex("253,67,67"), end_color=self.rgb_to_hex("253,67,67"), fill_type = "solid")
             elif answer.value == '3':
                 self.ws.cell(row=self.ws.max_row, column=4).fill = PatternFill(start_color=self.rgb_to_hex("252,207,69"), end_color=self.rgb_to_hex("252,207,69"), fill_type = "solid")
+        
+        self.ws.append(["ADHD Hyperactivity score :" , self.calculate_adhd_hyperactivity(age)[0] , "ADHD Hyperactivity :" , self.calculate_adhd_hyperactivity(age)[1]])
+        for cell in self.ws[self.ws.max_row]:
+            cell.fill = PatternFill(start_color=self.rgb_to_hex("235,210,130"), end_color=self.rgb_to_hex("235,210,130"), fill_type="solid")
+        for answer in self.adhd_hyperactivity.values():
+            evaluated = 'true' if answer.evaluated else 'false'
+            self.ws.append(["Question number :", answer.question_number, "Answer value :", answer.value , "Evaluated :" , evaluated])
+            # add color to answer value cell based on the value
+            if answer.evaluated == True:
+                self.ws.cell(row=self.ws.max_row, column=4).fill = PatternFill(start_color=self.rgb_to_hex("58,67,180"), end_color=self.rgb_to_hex("58,67,180"), fill_type = "solid")
+            else:
+                self.ws.cell(row=self.ws.max_row, column=4).fill = PatternFill(start_color=self.rgb_to_hex("253,29,233"), end_color=self.rgb_to_hex("253,29,233"), fill_type = "solid")
+
+        self.ws.append(["ADHD Inattention score :" , self.calculate_adhd_inattention(age)[0] , "ADHD Inattention :" , self.calculate_adhd_inattention(age)[1]])
+        for cell in self.ws[self.ws.max_row]:
+            cell.fill = PatternFill(start_color=self.rgb_to_hex("235,210,130"), end_color=self.rgb_to_hex("235,210,130"), fill_type="solid")
+        for answer in self.adhd_inattention.values():
+            evaluated = 'true' if answer.evaluated else 'false'
+            self.ws.append(["Question number :", answer.question_number, "Answer value :", answer.value , "Evaluated :" , evaluated])
+            # add color to answer value cell based on the value
+            if answer.evaluated == True:
+                self.ws.cell(row=self.ws.max_row, column=4).fill = PatternFill(start_color=self.rgb_to_hex("58,67,180"), end_color=self.rgb_to_hex("58,67,180"), fill_type = "solid")
+            else:
+                self.ws.cell(row=self.ws.max_row, column=4).fill = PatternFill(start_color=self.rgb_to_hex("253,29,233"), end_color=self.rgb_to_hex("253,29,233"), fill_type = "solid")
+            
                     
         self.ws.append(["Oppositional defiant disorder score :" , self.calculate_opposition()[0] , "Oppositional defiant disorder :" , self.calculate_opposition()[1]])
         for cell in self.ws[self.ws.max_row]:
@@ -300,12 +325,9 @@ class Survey:
             # add color to answer value cell based on the value
             if answer.evaluated == True:
                 self.ws.cell(row=self.ws.max_row, column=4).fill = PatternFill(start_color=self.rgb_to_hex("58,67,180"), end_color=self.rgb_to_hex("58,67,180"), fill_type = "solid")
-            elif answer.evaluated == False:
-                self.ws.cell(row=self.ws.max_row, column=4).fill = PatternFill(start_color=self.rgb_to_hex("253,29,233"), end_color=self.rgb_to_hex("253,29,233"), fill_type = "solid")
             else:
-                self.ws.cell(row=self.ws.max_row, column=4).fill = PatternFill(start_color=self.rgb_to_hex("253,67,67"), end_color=self.rgb_to_hex("253,67,67"), fill_type = "solid")
-    
-        
+                self.ws.cell(row=self.ws.max_row, column=4).fill = PatternFill(start_color=self.rgb_to_hex("253,29,233"), end_color=self.rgb_to_hex("253,29,233"), fill_type = "solid")
+
         self.ws.append(["Behavior disorder score :" , self.calculate_behavior()[0] , "Behavior disorder :" , self.calculate_behavior()[1]])
         for cell in self.ws[self.ws.max_row]:
             cell.fill = PatternFill(start_color=self.rgb_to_hex("235,210,130"), end_color=self.rgb_to_hex("235,210,130"), fill_type="solid")
@@ -315,10 +337,8 @@ class Survey:
             # add color to answer value cell based on the value
             if answer.evaluated == True:
                 self.ws.cell(row=self.ws.max_row, column=4).fill = PatternFill(start_color=self.rgb_to_hex("58,67,180"), end_color=self.rgb_to_hex("58,67,180"), fill_type = "solid")
-            elif answer.evaluated == False:
-                self.ws.cell(row=self.ws.max_row, column=4).fill = PatternFill(start_color=self.rgb_to_hex("253,29,233"), end_color=self.rgb_to_hex("253,29,233"), fill_type = "solid")
             else:
-                self.ws.cell(row=self.ws.max_row, column=4).fill = PatternFill(start_color=self.rgb_to_hex("253,67,67"), end_color=self.rgb_to_hex("253,67,67"), fill_type = "solid")
+                self.ws.cell(row=self.ws.max_row, column=4).fill = PatternFill(start_color=self.rgb_to_hex("253,29,233"), end_color=self.rgb_to_hex("253,29,233"), fill_type = "solid")
                        
         
         for category, answers in self.answers.items():
@@ -537,7 +557,7 @@ def calculate_score(survey : Survey , age : int):
     st.header("ADHD Hyperactivity")
     st.write("Score ADHD Hyperactivity: ", hyperactivity_score)
     st.write("ADHD Hyperactivity: ", hyperactivity_value)
-    st.progress(hyperactivity_score / len(answer_hyperactivity), text=f"{hyperactivity_score} / {len(answer_hyperactivity)}")
+    st.progress(hyperactivity_score / (len(answer_hyperactivity) - 2), text=f"{hyperactivity_score} / {(len(answer_hyperactivity) - 2)}")
     expand_hyperactivity = st.expander(f'Answers for category ADHD Hyperactivity', expanded=False)
     with expand_hyperactivity:
         for answer in answer_hyperactivity:
@@ -547,7 +567,7 @@ def calculate_score(survey : Survey , age : int):
     st.header("ADHD Inattention")
     st.write("Score ADHD Inattention: ", inattention_score)
     st.write("ADHD Inattention: ", inattention_value)
-    st.progress(inattention_score / len(answer_inattention), text=f"{inattention_score} / {len(answer_inattention)}")
+    st.progress(inattention_score / (len(answer_inattention) -1) , text=f"{inattention_score} / {(len(answer_inattention) - 1)}")
     expand_inattention = st.expander(f'Answers for category ADHD Inattention', expanded=False)
     with expand_inattention:
         for answer in answer_inattention:
