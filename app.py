@@ -302,7 +302,11 @@ class Survey:
                 self.ws.cell(row=self.ws.max_row, column=4).fill = PatternFill(start_color=self.rgb_to_hex("58,67,180"), end_color=self.rgb_to_hex("58,67,180"), fill_type = "solid")
             else:
                 self.ws.cell(row=self.ws.max_row, column=4).fill = PatternFill(start_color=self.rgb_to_hex("253,29,233"), end_color=self.rgb_to_hex("253,29,233"), fill_type = "solid")
-
+            if answer.question_number in [69,99]:
+                self.ws.cell(row=self.ws.max_row, column=1).fill = PatternFill(start_color=self.rgb_to_hex("252,207,69"), end_color=self.rgb_to_hex("252,207,69"), fill_type = "solid")    
+            if answer.question_number in [54,45]:
+                self.ws.cell(row=self.ws.max_row, column=1).fill = PatternFill(start_color=self.rgb_to_hex("253,67,67"), end_color=self.rgb_to_hex("253,67,67"), fill_type = "solid")
+              
         self.ws.append(["ADHD Inattention score :" , self.calculate_adhd_inattention(age)[0] , "ADHD Inattention :" , self.calculate_adhd_inattention(age)[1]])
         for cell in self.ws[self.ws.max_row]:
             cell.fill = PatternFill(start_color=self.rgb_to_hex("235,210,130"), end_color=self.rgb_to_hex("235,210,130"), fill_type="solid")
@@ -314,7 +318,8 @@ class Survey:
                 self.ws.cell(row=self.ws.max_row, column=4).fill = PatternFill(start_color=self.rgb_to_hex("58,67,180"), end_color=self.rgb_to_hex("58,67,180"), fill_type = "solid")
             else:
                 self.ws.cell(row=self.ws.max_row, column=4).fill = PatternFill(start_color=self.rgb_to_hex("253,29,233"), end_color=self.rgb_to_hex("253,29,233"), fill_type = "solid")
-            
+            if answer.question_number in [68,79]:
+                self.ws.cell(row=self.ws.max_row, column=1).fill = PatternFill(start_color=self.rgb_to_hex("252,207,69"), end_color=self.rgb_to_hex("252,207,69"), fill_type = "solid")
                     
         self.ws.append(["Oppositional defiant disorder score :" , self.calculate_opposition()[0] , "Oppositional defiant disorder :" , self.calculate_opposition()[1]])
         for cell in self.ws[self.ws.max_row]:
