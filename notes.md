@@ -1,16 +1,16 @@
 # TODO
 
-[DONE]  
+# [DONE]  
           1. (high) add together LP1 + LP2 ...
-[DONE]
+# [DONE]
           2. (mid) responsibility
-[DONE]  
+# [DONE]  
           3. (high) export data as excel file with header data [ time_of_creation, name , age , sex , description ]
                     - client side data
                     - (optional) color coding of output values
-[DONE]        
+# [DONE]        
         4. (optional) improve performance
-[DONE]  
+# [DONE]  
           5. (highest) better evaluation of the survey after addition information
 
                     - [Screenshot from 2024-03-24 21-23-29.png]
@@ -23,14 +23,14 @@
                       if celkove skore > 14 => 99%
 
           6. (mid) rename domaine Conners3
-[DONE]  
+# [DONE]  
           7. (Important) Make evaluation for Porucha Chovania and Porucha opozicneho vzdoru
                     - [porucha.png]
-[Done]  
+# [Done]  
           8. (Important) Update excel to work with Porucha Chovania a Porucha opozicneho vzdoru
-[Done]  
+# [Done]  
           9. Make evaluation for ADHD with inattention and hyperactivity
                     - ask more questions about ADHD
-[Done]  
+# [Done]  
           10. Implement self evaluation test
         
