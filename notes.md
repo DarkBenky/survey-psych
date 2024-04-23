@@ -21,5 +21,7 @@
 [DONE]  6. (Important) Make evaluation for Porucha Chovania and Porucha opozicneho vzdoru
           - [porucha.png]
 [Done]  7. (Important) Update excel to work with Porucha Chovania a Porucha opozicneho vzdoru
-        8. Make evaluation for ADHD with inattention and hyperactivity
+[Done]  8. Make evaluation for ADHD with inattention and hyperactivity
           - ask more questions about ADHD
+        9. Implement self evaluation test
+        
